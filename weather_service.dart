@@ -1,14 +1,19 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 class WeatherService {
-  // ✅ Your OpenWeatherMap API Key
-  final String apiKey = "7c004561c464ed7b1e599fbbfe987151";
+  // API key loaded securely from environment
+  final String _apiKey = dotenv.env['OPENWEATHER_API_KEY'] ?? '';
 
-  /// Fetch weather by city/village name
   Future<Map<String, dynamic>?> fetchWeatherByCity(String city) async {
+    if (_apiKey.isEmpty) {
+      throw Exception("API key not found");
+    }
+
     final url = Uri.parse(
-      "https://api.openweathermap.org/data/2.5/weather?q=$city&appid=$apiKey&units=metric",
+      "https://api.openweathermap.org/data/2.5/weather"
+      "?q=$city&appid=$_apiKey&units=metric",
     );
 
     try {
@@ -16,20 +21,22 @@ class WeatherService {
 
       if (response.statusCode == 200) {
         return json.decode(response.body);
-      } else {
-        print("❌ Error: ${response.statusCode} - ${response.body}");
-        return null;
       }
-    } catch (e) {
-      print("❌ Exception: $e");
+      return null;
+    } catch (_) {
       return null;
     }
   }
 
-  /// Fetch weather by latitude & longitude
-  Future<Map<String, dynamic>?> fetchWeatherByCoords(double lat, double lon) async {
+  Future<Map<String, dynamic>?> fetchWeatherByCoords(
+      double lat, double lon) async {
+    if (_apiKey.isEmpty) {
+      throw Exception("API key not found");
+    }
+
     final url = Uri.parse(
-      "https://api.openweathermap.org/data/2.5/weather?lat=$lat&lon=$lon&appid=$apiKey&units=metric",
+      "https://api.openweathermap.org/data/2.5/weather"
+      "?lat=$lat&lon=$lon&appid=$_apiKey&units=metric",
     );
 
     try {
@@ -37,12 +44,9 @@ class WeatherService {
 
       if (response.statusCode == 200) {
         return json.decode(response.body);
-      } else {
-        print("❌ Error: ${response.statusCode} - ${response.body}");
-        return null;
       }
-    } catch (e) {
-      print("❌ Exception: $e");
+      return null;
+    } catch (_) {
       return null;
     }
   }
