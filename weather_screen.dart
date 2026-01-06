@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../services/weather_service.dart';
 
-
 class WeatherScreen extends StatefulWidget {
   const WeatherScreen({super.key});
 
@@ -15,32 +14,32 @@ class _WeatherScreenState extends State<WeatherScreen> {
   final TextEditingController _controller = TextEditingController();
 
   Map<String, dynamic>? _weatherData;
-  String? _lastSearchedVillage;
+  String? _lastSearchedLocation;
 
   @override
   void initState() {
     super.initState();
-    _loadLastVillage();
+    _loadLastLocation();
   }
 
-  Future<void> _loadLastVillage() async {
+  Future<void> _loadLastLocation() async {
     final prefs = await SharedPreferences.getInstance();
-    String? savedVillage = prefs.getString("lastVillage");
-    if (savedVillage != null) {
-      _fetchWeather(savedVillage);
+    final savedLocation = prefs.getString("lastLocation");
+    if (savedLocation != null) {
+      _fetchWeather(savedLocation);
     }
   }
 
-  Future<void> _fetchWeather(String village) async {
-    final data = await _weatherService.fetchWeatherByCity(village);
+  Future<void> _fetchWeather(String location) async {
+    final data = await _weatherService.fetchWeatherByCity(location);
     if (data != null) {
       setState(() {
         _weatherData = data;
-        _lastSearchedVillage = village;
+        _lastSearchedLocation = location;
       });
 
       final prefs = await SharedPreferences.getInstance();
-      prefs.setString("lastVillage", village);
+      prefs.setString("lastLocation", location);
     }
   }
 
@@ -59,17 +58,18 @@ class _WeatherScreenState extends State<WeatherScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text("Karnataka Village Weather")),
+      appBar: AppBar(title: const Text("Weather App")),
       body: Container(
         width: double.infinity,
         height: double.infinity,
         color: _weatherData != null
-            ? _getBackgroundColor(_weatherData!['weather'][0]['description'])
+            ? _getBackgroundColor(
+                _weatherData!['weather'][0]['description'])
             : Colors.blueGrey.shade200,
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            // 🔹 Search Box
+            // Search Box
             Padding(
               padding: const EdgeInsets.all(16.0),
               child: Row(
@@ -78,7 +78,7 @@ class _WeatherScreenState extends State<WeatherScreen> {
                     child: TextField(
                       controller: _controller,
                       decoration: const InputDecoration(
-                        hintText: "Enter village name",
+                        hintText: "Enter city or location",
                         border: OutlineInputBorder(),
                       ),
                     ),
@@ -87,7 +87,7 @@ class _WeatherScreenState extends State<WeatherScreen> {
                     icon: const Icon(Icons.search),
                     onPressed: () {
                       if (_controller.text.isNotEmpty) {
-                        _fetchWeather(_controller.text);
+                        _fetchWeather(_controller.text.trim());
                       }
                     },
                   )
@@ -97,83 +97,60 @@ class _WeatherScreenState extends State<WeatherScreen> {
 
             if (_weatherData == null)
               Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Image.asset(
-                    "assets/images/weather2.jpg", // ✅ Default image
-                    width: 200,
-                    height: 200,
-                    fit: BoxFit.cover,
-                  ),
-                  const SizedBox(height: 20),
-                  const Text(
-                    "Search for a village to see weather 🌤️",
+                children: const [
+                  Icon(Icons.cloud, size: 120),
+                  SizedBox(height: 20),
+                  Text(
+                    "Search for a location to view weather",
                     style: TextStyle(fontSize: 16),
                   ),
                 ],
               )
             else
               Column(
-                mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Text(
-                    _lastSearchedVillage ?? "",
+                    _lastSearchedLocation ?? "",
                     style: const TextStyle(
-                        fontSize: 24, fontWeight: FontWeight.bold, color: Colors.white),
+                        fontSize: 24,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.white),
                   ),
 
-                  // 🔹 Weather Icon
                   Image.network(
-                    "http://openweathermap.org/img/wn/${_weatherData!['weather'][0]['icon']}@2x.png",
+                    "https://openweathermap.org/img/wn/"
+                    "${_weatherData!['weather'][0]['icon']}@2x.png",
                     width: 100,
                     height: 100,
-                    errorBuilder: (context, error, stackTrace) {
-                      return const Icon(Icons.cloud, size: 80, color: Colors.white);
-                    },
+                    errorBuilder: (_, __, ___) =>
+                        const Icon(Icons.cloud, size: 80, color: Colors.white),
                   ),
 
-                  // 🔹 Temperature
                   Text(
                     "${_weatherData!['main']['temp']}°C",
                     style: const TextStyle(
-                        fontSize: 40, fontWeight: FontWeight.bold, color: Colors.white),
+                        fontSize: 40,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.white),
                   ),
 
-                  // 🔹 Condition
                   Text(
                     _weatherData!['weather'][0]['description'],
-                    style: const TextStyle(fontSize: 18, color: Colors.white),
+                    style: const TextStyle(
+                        fontSize: 18, color: Colors.white),
                   ),
+
                   const SizedBox(height: 20),
 
-                  // 🔹 Extra Info Row (with emojis 🌬️🔥🍃)
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: [
-                      Column(
-                        children: [
-                          const Text("🔥", style: TextStyle(fontSize: 30)),
-                          Text("${_weatherData!['main']['humidity']}%",
-                              style: const TextStyle(color: Colors.white)),
-                          const Text("Humidity", style: TextStyle(color: Colors.white)),
-                        ],
-                      ),
-                      Column(
-                        children: [
-                          const Text("🍃", style: TextStyle(fontSize: 30)),
-                          Text("${_weatherData!['wind']['speed']} m/s",
-                              style: const TextStyle(color: Colors.white)),
-                          const Text("Wind", style: TextStyle(color: Colors.white)),
-                        ],
-                      ),
-                      Column(
-                        children: [
-                          const Text("🌬️", style: TextStyle(fontSize: 30)),
-                          Text("${_weatherData!['main']['pressure']} hPa",
-                              style: const TextStyle(color: Colors.white)),
-                          const Text("Pressure", style: TextStyle(color: Colors.white)),
-                        ],
-                      ),
+                      _infoTile("🔥",
+                          "${_weatherData!['main']['humidity']}%", "Humidity"),
+                      _infoTile("🍃",
+                          "${_weatherData!['wind']['speed']} m/s", "Wind"),
+                      _infoTile("🌬️",
+                          "${_weatherData!['main']['pressure']} hPa", "Pressure"),
                     ],
                   ),
                 ],
@@ -181,6 +158,16 @@ class _WeatherScreenState extends State<WeatherScreen> {
           ],
         ),
       ),
+    );
+  }
+
+  Widget _infoTile(String emoji, String value, String label) {
+    return Column(
+      children: [
+        Text(emoji, style: const TextStyle(fontSize: 30)),
+        Text(value, style: const TextStyle(color: Colors.white)),
+        Text(label, style: const TextStyle(color: Colors.white)),
+      ],
     );
   }
 }
