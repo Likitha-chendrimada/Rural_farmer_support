@@ -52,3 +52,55 @@ Farmers can select their preferred language
 
 Makes the app usable for non-English speakers
 
+🛠️ Technologies Used
+
+Frontend: Flutter
+
+Backend: Firebase
+
+API: Weather API, Crop Price API
+
+Database: Firebase Firestore
+
+Platform: Android
+
+👨‍🌾 Target Users
+
+Rural farmers
+
+Agricultural workers
+
+Farming communities
+
+📱 System Requirements
+
+Android smartphone
+
+Internet connection
+
+Android version 7.0 or above
+
+✅ Advantages
+
+Easy access to agricultural information
+
+User-friendly interface
+
+Language-friendly for rural users
+
+Saves time and effort for farmers
+
+🚀 Future Enhancements
+
+Crop disease detection using AI
+
+Fertilizer and pesticide recommendations
+
+Direct farmer-to-buyer marketplace
+
+Offline access for selected features
+
+📚 Conclusion
+
+The Rural Farmer Support App aims to empower farmers by providing accurate, localized, and easy-to-understand information.
+This application contributes to sustainable agriculture and digital empowerment of rural communities.
