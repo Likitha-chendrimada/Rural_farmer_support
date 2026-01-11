@@ -52,7 +52,7 @@ Farmers can select their preferred language
 
 Makes the app usable for non-English speakers
 
-🛠️ Technologies Used
+🛠️ Technologies Used:
 
 Frontend: Flutter
 
@@ -64,7 +64,7 @@ Database: Firebase Firestore
 
 Platform: Android
 
-👨‍🌾 Target Users
+👨‍🌾 Target Users:
 
 Rural farmers
 
@@ -72,7 +72,7 @@ Agricultural workers
 
 Farming communities
 
-📱 System Requirements
+📱 System Requirements:
 
 Android smartphone
 
@@ -80,7 +80,7 @@ Internet connection
 
 Android version 7.0 or above
 
-✅ Advantages
+✅ Advantages:
 
 Easy access to agricultural information
 
@@ -90,7 +90,7 @@ Language-friendly for rural users
 
 Saves time and effort for farmers
 
-🚀 Future Enhancements
+🚀 Future Enhancements:
 
 Crop disease detection using AI
 
@@ -100,7 +100,7 @@ Direct farmer-to-buyer marketplace
 
 Offline access for selected features
 
-📚 Conclusion
+📚 Conclusion:
 
 The Rural Farmer Support App aims to empower farmers by providing accurate, localized, and easy-to-understand information.
 This application contributes to sustainable agriculture and digital empowerment of rural communities.
